@@ -1,0 +1,35 @@
+name: AMS Get
+description: Get AMS environment variables
+author: a3.services
+branding:
+  icon: settings
+  color: purple
+inputs:
+  summary:
+    description: 'Enable or disable the summary output'
+    required: false
+    default: 'false'
+outputs: {}
+runs:
+  using: composite
+  steps:
+    - name: Download environment variables
+      uses: actions/download-artifact@v4
+      with:
+        name: ams-env
+
+    - name: Set AMS environment variables
+      shell: sh
+      run: |
+        cat ams.env >> ${GITHUB_ENV}
+      
+    - name: Summary
+      shell: sh
+      if: ${{ inputs.summary == 'true' }}
+      run: |
+        echo "### Environment Details" >> $GITHUB_STEP_SUMMARY
+        echo "| Variable          | Value                                      |" >> $GITHUB_STEP_SUMMARY
+        echo "|-------------------|--------------------------------------------|" >> $GITHUB_STEP_SUMMARY
+        echo "| AMS_NAME          | ${{ env.AMS_NAME }}                        |" >> $GITHUB_STEP_SUMMARY
+        echo "| AMS_REVISION      | ${{ env.AMS_REVISION }}                    |" >> $GITHUB_STEP_SUMMARY
+        echo "| AMS_BUILD         | ${{ env.AMS_BUILD }}                       |" >> $GITHUB_STEP_SUMMARY
