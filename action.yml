@@ -1,0 +1,15 @@
+name: DOCKERHUB Actions
+description: A collection of DOCKERHUB actions
+author: a3.services
+branding:
+  icon: settings
+  color: purple
+inputs: {}
+outputs: {}
+runs:
+  using: "composite"
+  steps:
+    - name: Get DOCKERHUB environment
+      uses: ./get
+    - name: Set up DOCKERHUB environment
+      uses: ./set
