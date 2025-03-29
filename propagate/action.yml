@@ -72,7 +72,10 @@ runs:
           echo "${DOCKERHUB_CATEGORIES}"
           
           echo "1 -------------------"
-          IFS=',' read -r -a CATEGORIES <<< "${DOCKERHUB_CATEGORIES}"
+          CATEGORIES=()
+          for CATEGORY in ${DOCKERHUB_CATEGORIES//,/ }; do
+            CATEGORIES+=("${CATEGORY}")
+          done
           
           echo "2 -------------------"
           CATEGORY_JSON=""
