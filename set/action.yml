@@ -34,6 +34,14 @@ runs:
         cat dockerhub.env
         echo "......................................."
         yq
+
+        metadata=$(awk '/^---$/ {inside=!inside} inside' "${{ inputs.file }}")
+
+        # Skontrolujeme obsah metadát
+        echo "......................................."
+        echo "$metadata"
+        echo "......................................."
+        
         
         # Extrahujeme len metadata medzi --- (YAML hlavička)
         metadata=$(yq eval 'select(documentIndex == 0) | .[]' "${{ inputs.file }}")
