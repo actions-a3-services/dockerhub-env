@@ -42,6 +42,7 @@ runs:
         echo "......................................."
         
 
+        yq
         # Extrahovanie metadát medzi blokmi ---
         yq eval '. | to_entries | .[] | "DOCKERHUB_" + (tostring | ascii_upcase) + "=" + .value' "${{ inputs.file }}" >> dockerhub.env
     
