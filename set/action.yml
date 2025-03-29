@@ -35,12 +35,13 @@ runs:
         echo "......................................."
         yq
 
-        metadata=$(awk '/^---$/ {inside=!inside} inside' "${{ inputs.file }}")
-
+        # Extrahovanie len metadát medzi '---' (YAML hlavička) a odstránenie '---' z premennej
+        metadata=$(awk '/^---$/ {inside=!inside} inside && !/^---$/ {print}' "${{ inputs.file }}")
+    
         # Skontrolujeme obsah metadát
-        echo "......................................."
+        echo "+++++++++++++++++++++++++++++++++++++++"
         echo "$metadata"
-        echo "......................................."
+        echo "+++++++++++++++++++++++++++++++++++++++"
         
         
         # Extrahujeme len metadata medzi --- (YAML hlavička)
