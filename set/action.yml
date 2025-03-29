@@ -41,7 +41,7 @@ runs:
     - name: Set DOCKERHUB generated
       shell: sh
       run: |
-        echo "DOCKERHUB_REPO_NAME="${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}" >> dockerhub.env
+        echo "DOCKERHUB_REPO_NAME="${DOCKERHUB_REPO}-${{ env.AMS_NAME }}" >> dockerhub.env
         cat dockerhub.env >> ${GITHUB_ENV}
        
     - name: Upload environment variables
