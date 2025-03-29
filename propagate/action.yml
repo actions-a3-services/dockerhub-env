@@ -73,7 +73,9 @@ runs:
           
           echo "1 -------------------"
           CATEGORIES=()
+          echo "1a -------------------"
           for CATEGORY in ${DOCKERHUB_CATEGORIES//,/ }; do
+            echo "1b -------------------"
             CATEGORIES+=("${CATEGORY}")
           done
           
