@@ -28,23 +28,8 @@ runs:
     - name: Extract metadata from DOCKERHUB.md
       shell: sh
       run: |
-        echo ".......................................xxxxxxxxxxx"
-        cat ${GITHUB_ENV}
-        echo "......................................."
-        cat dockerhub.env
-        echo "......................................."
-        yq
-
-        # Extrahovanie len metadát medzi '---' (YAML hlavička) a odstránenie '---' z premennej
-        metadata=$(awk '/^---$/ {inside=!inside} inside && !/^---$/ {print}' "${{ inputs.file }}")
-    
-        # Skontrolujeme obsah metadát
-        echo "+++++++++++++++++++++++++++++++++++++++"
-        echo "$metadata"
-        echo "+++++++++++++++++++++++++++++++++++++++"
-        
-        
-        echo "$metadata" | while IFS= read -r line; do
+        METADATA=$(awk '/^---$/ {inside=!inside} inside && !/^---$/ {print}' "${{ inputs.file }}")
+        echo "${METADATA}" | while IFS= read -r line; do
           # Pre každý kľúč a hodnotu vytvoriť riadok vo formáte DOCKERHUB_<key>=<value>
           if [ -n "$line" ]; then
             key=$(echo "$line" | cut -d ':' -f1 | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
@@ -52,16 +37,7 @@ runs:
             echo "DOCKERHUB_${key}=${value}" >> dockerhub.env
           fi
         done
-        
-    
-        # Pridáme premenné do GITHUB_ENV
         cat dockerhub.env >> ${GITHUB_ENV}
-
-        echo "......................................."
-        cat ${GITHUB_ENV}
-        echo "......................................."
-        cat dockerhub.env
-        echo "......................................."
         
     - name: Upload environment variables
       uses: actions/upload-artifact@v4
