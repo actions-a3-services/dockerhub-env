@@ -24,6 +24,7 @@ runs:
       run: |
         echo "DOCKERHUB_USERNAME=${{ inputs.username }}" >> dockerhub.env
         echo "DOCKERHUB_TOKEN=${{ inputs.token }}" >> dockerhub.env
+        cat dockerhub.env >> ${GITHUB_ENV}
         
     - name: Extract metadata from DOCKERHUB.md
       shell: sh
@@ -37,11 +38,12 @@ runs:
             echo "DOCKERHUB_${key}=${value}" >> dockerhub.env
           fi
         done
+        cat dockerhub.env >> ${GITHUB_ENV}
  
     - name: Set DOCKERHUB generated
       shell: sh
       run: |
-        echo "DOCKERHUB_REPO_NAME="${DOCKERHUB_REPO}-${{ env.AMS_NAME }}" >> dockerhub.env
+        echo "DOCKERHUB_REPO_NAME="${{ env.DOCKERHUB_REPO}}-${{ env.AMS_NAME }}" >> dockerhub.env
         cat dockerhub.env >> ${GITHUB_ENV}
        
     - name: Upload environment variables
