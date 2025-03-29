@@ -22,8 +22,9 @@ runs:
     - name: Set DOCKERHUB credentials
       shell: sh
       run: |
-        echo "DOCKERHUB_USERNAME=${{ inputs.username }}" >> $GITHUB_ENV
-        echo "DOCKERHUB_TOKEN=${{ inputs.token }}" >> $GITHUB_ENV
+        echo "DOCKERHUB_USERNAME=${{ inputs.username }}" >> dockerhub.env
+        echo "DOCKERHUB_TOKEN=${{ inputs.token }}" >> dockerhub.env
+        cat dockerhub.env >> ${GITHUB_ENV}
         
     - name: Extract metadata from DOCKERHUB.md
       shell: sh
