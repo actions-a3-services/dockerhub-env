@@ -68,6 +68,9 @@ runs:
             -H "Authorization: Bearer ${TOKEN}" \
             -d "${JSON_PAYLOAD}"
 
+          echo "0 -------------------"
+          echo "${DOCKERHUB_CATEGORIES}"
+          
           echo "1 -------------------"
           IFS=',' read -r -a categories <<< "${DOCKERHUB_CATEGORIES}"
           
