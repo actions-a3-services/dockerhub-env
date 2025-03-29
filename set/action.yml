@@ -35,8 +35,11 @@ runs:
 
         cat dockerhub.env >> ${GITHUB_ENV}
 
+        echo "......................................."
         cat ${GITHUB_ENV}
+        echo "......................................."
         cat dockerhub.env
+        echo "......................................."
         
     - name: Upload environment variables
       uses: actions/upload-artifact@v4
