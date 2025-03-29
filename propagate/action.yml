@@ -68,32 +68,17 @@ runs:
             -H "Authorization: Bearer ${TOKEN}" \
             -d "${JSON_PAYLOAD}"
 
-          echo "0 -------------------"
-          echo "${DOCKERHUB_CATEGORIES}"
-          
-          echo "1 -------------------"
-          CATEGORIES=()
-          echo "1a -------------------"
-          for CATEGORY in ${DOCKERHUB_CATEGORIES//,/ }; do
-            echo "1b -------------------"
-            CATEGORIES+=("${CATEGORY}")
-          done
-          
-          echo "2 -------------------"
           IFS=',' read -r -a CATEGORIES <<< "${DOCKERHUB_CATEGORIES}"
           CATEGORY_JSON=""
           for category in "${CATEGORIES[@]}"; do
             CATEGORY_JSON+="{\"slug\":\"${CATEGORIES}\",\"name\":\"${CATEGORIES}\"},"
           done
           
-          echo "3 -------------------"
           CATEGORY_JSON="${CATEGORY_JSON%,}"
           
-          echo "4 -------------------"
           echo "CATEGORY_JSON"
           echo "[${CATEGORY_JSON}]" | jq .
           
-          echo "5 -------------------"
           curl -X PATCH "https://hub.docker.com/v2/repositories/${DOCKERHUB_USERNAME}/${DOCKERHUB_REPO_NAME}/categories/" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${TOKEN}" \
