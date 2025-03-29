@@ -31,19 +31,19 @@ runs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
 
-#      - name: Build and push Docker image
-#        uses: docker/build-push-action@v6.9.0
-#        with:
-#          context: .
-#          push: true
-#          build-args: |
-#            AMS=${{ env.AMS }}
-#            AMS_HUB_NAME=${{ env.AMS_NAME }}
-#            AMS_HUB_REVISION=${{ env.AMS_REVISION }}
-#            AMS_HUB_BUILD=${{ env.AMS_BUILD }}
-#          tags: |
-#            ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:latest
-#            ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6.9.0
+        with:
+          context: .
+          push: true
+          build-args: |
+            AMS=${{ env.AMS }}
+            AMS_HUB_NAME=${{ env.AMS_NAME }}
+            AMS_HUB_REVISION=${{ env.AMS_REVISION }}
+            AMS_HUB_BUILD=${{ env.AMS_BUILD }}
+          tags: |
+            ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:latest
+            ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }}
 
       - name: Set Docker Hub description @ DOCKERHUB.md
         shell: sh
