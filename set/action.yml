@@ -31,7 +31,7 @@ runs:
       run: |
         awk 'BEGIN {inside=0} 
              /^---$/ {inside++; next} 
-             inside==1 {print "DOCKERHUB_" toupper($1) "=" substr($0, index($0, $2))}' "${{ inputs.file }}" > dockerhub.env
+             inside==1 {print "DOCKERHUB_" toupper($1) "=" substr($0, index($0, $2))}' "${{ inputs.file }}" >> dockerhub.env
 
         cat dockerhub.env >> ${GITHUB_ENV}
 
