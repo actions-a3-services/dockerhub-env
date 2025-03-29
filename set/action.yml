@@ -33,7 +33,9 @@ runs:
         echo "......................................."
         cat dockerhub.env
         echo "......................................."
-      # Extrahujeme len metadata medzi --- (YAML hlavička)
+        yq
+        
+        # Extrahujeme len metadata medzi --- (YAML hlavička)
         metadata=$(yq eval 'select(documentIndex == 0) | .[]' "${{ inputs.file }}")
     
         # Skontrolujeme obsah metadát
@@ -42,7 +44,6 @@ runs:
         echo "......................................."
         
 
-        yq
         # Extrahovanie metadát medzi blokmi ---
         yq eval '. | to_entries | .[] | "DOCKERHUB_" + (tostring | ascii_upcase) + "=" + .value' "${{ inputs.file }}" >> dockerhub.env
     
