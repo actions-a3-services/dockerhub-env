@@ -40,12 +40,15 @@ runs:
              inside==1 { 
                # Pre každú riadok v metadátach vytvoríme premennú
                if ($1 != "") { 
+                 # Hľadáme pozíciu ":" a odtiaľ získavame hodnotu
+                 key=$1
+                 value=substr($0, index($0, ":") + 1)
+                 # Odstránime vedúce a koncové medzery z hodnoty
+                 gsub(/^ +| +$/, "", value)
                  # Vytvoríme premennú s prefixom DOCKERHUB_
-                 print "DOCKERHUB_" toupper($1) "=" substr($0, index($0, $2))
+                 print "DOCKERHUB_" toupper(key) "=" value
                }
-             }' "${{ inputs.file }}" >> dockerhub.env
-
-        cat dockerhub.env >> ${GITHUB_ENV}
+             }' "${{ inputs.file }}" >> ${GITHUB_ENV}
 
         echo "......................................."
         cat ${GITHUB_ENV}
