@@ -1,0 +1,105 @@
+name: DOCKERHUB Propagate
+description: Propagate DOCKERHUB image
+author: a3.services
+branding:
+  icon: settings
+  color: purple
+inputs:
+  file:
+    description: 'Path to DOCKERHUB.md'
+    required: false
+    default: 'DOCKERHUB.md'
+  username:
+    description: 'DockerHub username used for authentication.'
+    required: true
+  token:
+    description: 'DockerHub access token for authentication.'
+    required: true
+outputs: {}
+runs:
+  using: composite
+  steps:
+      - name: Set up AMS environment
+        uses: actions-a3-services/ams-env/get@main
+        
+      - name: Set up DOCKERHUB environment
+        uses: actions-a3-services/dockerhub-env/get@main
+
+  - name: Log in to Docker Hub
+        uses: docker/login-action@v3.3.0
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6.9.0
+        with:
+          context: .
+          push: true
+          build-args: |
+            AMS=${{ env.AMS }}
+            AMS_HUB_NAME=${{ env.AMS_NAME }}
+            AMS_HUB_REVISION=${{ env.AMS_REVISION }}
+            AMS_HUB_BUILD=${{ env.AMS_BUILD }}
+          tags: |
+            ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:latest
+            ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }}
+
+      - name: Set Docker Hub description @ DOCKERHUB.md
+        env:
+          DOCKERHUB_USERNAME: ${{ env.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          REPO_NAME: "${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}" 
+          DESCRIPTION: ${{ env.DESCRIPTION }}
+          FULL_DESCRIPTION: ${{ env.FULL_DESCRIPTION }}
+        run: |
+          TOKEN=$(curl -s -X POST https://hub.docker.com/v2/users/login/ \
+            -H "Content-Type: application/json" \
+            -d '{"username": "'"${DOCKERHUB_USERNAME}"'", "password": "'"${DOCKERHUB_TOKEN}"'"}' | jq -r .token)
+
+          FULL_DESCRIPTION=$(<DOCKERHUB.md)
+
+          JSON_PAYLOAD=$(jq -n \
+            --arg full_description "${FULL_DESCRIPTION}" \
+            --arg description "${{ env.DOCKERHUB_DESCRIPTION }}" \
+            '{full_description: $full_description, description: $description}')
+
+          echo "JSON_PAYLOAD"
+          echo "$JSON_PAYLOAD" | jq .
+
+          curl -X PATCH "https://hub.docker.com/v2/repositories/${DOCKERHUB_USERNAME}/${REPO_NAME}/" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -d "$JSON_PAYLOAD"
+         
+          IFS=',' read -r -a categories <<< "${{ env.DOCKERHUB_CATEGORIES }}"
+
+          CATEGORY_JSON=""
+          for category in "${categories[@]}"; do
+            CATEGORY_JSON+="{\"slug\":\"$category\",\"name\":\"$category\"},"
+          done
+
+          CATEGORY_JSON="${CATEGORY_JSON%,}"
+
+          echo "CATEGORY_JSON"
+          echo "[${CATEGORY_JSON}]" | jq .
+
+          curl -X PATCH "https://hub.docker.com/v2/repositories/${DOCKERHUB_USERNAME}/${REPO_NAME}/categories/" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -d "[${CATEGORY_JSON}]"
+
+      - name: Docker Hub Repository
+        run: |
+          echo "## Deployment Information" >> $GITHUB_STEP_SUMMARY
+          echo "| Parameter | Command |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "| DOCKERHUB_DESCRIPTION | ${{ env.DOCKERHUB_DESCRIPTION }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| DOCKERHUB_CATEGORIES | ${{ env.DOCKERHUB_CATEGORIES }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| DOCKERHUB_REPO | ${{ env.DOCKERHUB_REPO }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| DOCKERHUB_APP_PARAM | ${{ env.DOCKERHUB_APP_PARAM }} |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "| URL       | https://hub.docker.com/r/a3services/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| APP       | docker run a3services/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| APP-PARAM | docker run ${{ env.DOCKERHUB_APP_PARAM }} a3services/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| RUN       | docker run -it --entrypoint /bin/sh a3services/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }} |" >> $GITHUB_STEP_SUMMARY
