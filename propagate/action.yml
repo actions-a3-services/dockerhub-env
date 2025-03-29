@@ -46,6 +46,7 @@ runs:
             ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }}
 
       - name: Set Docker Hub description @ DOCKERHUB.md
+        shell: sh
         env:
           DOCKERHUB_USERNAME: ${{ env.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ env.DOCKERHUB_TOKEN }}
@@ -90,6 +91,7 @@ runs:
             -d "[${CATEGORY_JSON}]"
 
       - name: Docker Hub Repository
+        shell: sh
         run: |
           echo "## Deployment Information" >> $GITHUB_STEP_SUMMARY
           echo "| Parameter | Command |" >> $GITHUB_STEP_SUMMARY
