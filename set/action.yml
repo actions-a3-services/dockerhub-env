@@ -9,10 +9,22 @@ inputs:
     description: 'Path to DOCKERHUB.md'
     required: false
     default: 'DOCKERHUB.md'
+  username:
+    description: 'DockerHub username used for authentication.'
+    required: true
+  token:
+    description: 'DockerHub access token for authentication.'
+    required: true
 outputs: {}
 runs:
   using: composite
   steps:
+    - name: Set DOCKERHUB credentials
+      shell: sh
+      run: |
+        echo "DOCKERHUB_USERNAME=${{ inputs.username }}" >> $GITHUB_ENV
+        echo "DOCKERHUB_TOKEN=${{ inputs.token }}" >> $GITHUB_ENV
+        
     - name: Extract metadata from DOCKERHUB.md
       shell: sh
       run: |
