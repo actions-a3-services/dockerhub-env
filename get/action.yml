@@ -9,6 +9,13 @@ inputs:
     description: 'Enable or disable the summary output'
     required: false
     default: 'false'
+  username:
+    description: 'DockerHub username used for authentication.'
+    required: true
+  token:
+    description: 'DockerHub access token for authentication.'
+    required: true
+
 outputs: {}
 runs:
   using: composite
@@ -18,6 +25,12 @@ runs:
       with:
         name: dockerhub-env
 
+    - name: Set DOCKERHUB credentials
+      shell: sh
+      run: |
+        echo "DOCKERHUB_USERNAME=${{ inputs.username }}" >> $GITHUB_ENV
+        echo "DOCKERHUB_TOKEN=${{ inputs.token }}" >> $GITHUB_ENV
+    
     - name: Set DOCKERHUB environment variables
       shell: sh
       run: |
