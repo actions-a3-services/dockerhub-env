@@ -1,5 +1,5 @@
-name: AMS Get
-description: Get AMS environment variables
+name: DOCKERHUB Get
+description: Get DOCKERHUB environment variables
 author: a3.services
 branding:
   icon: settings
@@ -16,12 +16,12 @@ runs:
     - name: Download environment variables
       uses: actions/download-artifact@v4
       with:
-        name: ams-env
+        name: dockerhub-env
 
-    - name: Set AMS environment variables
+    - name: Set DOCKERHUB environment variables
       shell: sh
       run: |
-        cat ams.env >> ${GITHUB_ENV}
+        cat dockerhub.env >> ${GITHUB_ENV}
       
     - name: Summary
       shell: sh
