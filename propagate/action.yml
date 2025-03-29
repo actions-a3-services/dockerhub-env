@@ -46,7 +46,7 @@ runs:
             ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }}
 
       - name: Set Docker Hub description @ DOCKERHUB.md
-        shell: sh
+        shell: bash
         run: |
           echo ${CREDENTIALS}
           TOKEN=$(curl -s -X POST https://hub.docker.com/v2/users/login/ \
@@ -80,6 +80,7 @@ runs:
           done
           
           echo "2 -------------------"
+          IFS=',' read -r -a CATEGORIES <<< "${DOCKERHUB_CATEGORIES}"
           CATEGORY_JSON=""
           for category in "${CATEGORIES[@]}"; do
             CATEGORY_JSON+="{\"slug\":\"${CATEGORIES}\",\"name\":\"${CATEGORIES}\"},"
