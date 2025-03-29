@@ -35,20 +35,10 @@ runs:
         echo "......................................."
 
         # Extrahovanie metadát medzi blokmi ---
-        awk 'BEGIN {inside=0} 
-             /^---$/ {inside++; next} 
-             inside==1 { 
-               # Pre každú riadok v metadátach vytvoríme premennú
-               if ($1 != "") { 
-                 # Hľadáme pozíciu ":" a odtiaľ získavame hodnotu
-                 key=$1
-                 value=substr($0, index($0, ":") + 1)
-                 # Odstránime vedúce a koncové medzery z hodnoty
-                 gsub(/^ +| +$/, "", value)
-                 # Vytvoríme premennú s prefixom DOCKERHUB_
-                 print "DOCKERHUB_" toupper(key) "=" value
-               }
-             }' "${{ inputs.file }}" >> ${GITHUB_ENV}
+        yq eval '. | to_entries | .[] | "DOCKERHUB_" + (tostring | ascii_upcase) + "=" + .value' "${{ inputs.file }}" >> dockerhub.env
+    
+        # Pridáme premenné do GITHUB_ENV
+        cat dockerhub.env >> ${GITHUB_ENV}
 
         echo "......................................."
         cat ${GITHUB_ENV}
