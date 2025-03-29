@@ -24,7 +24,6 @@ runs:
       run: |
         echo "DOCKERHUB_USERNAME=${{ inputs.username }}" >> dockerhub.env
         echo "DOCKERHUB_TOKEN=${{ inputs.token }}" >> dockerhub.env
-        cat dockerhub.env >> ${GITHUB_ENV}
         
     - name: Extract metadata from DOCKERHUB.md
       shell: sh
@@ -44,7 +43,7 @@ runs:
                  # Vytvoríme premennú s prefixom DOCKERHUB_
                  print "DOCKERHUB_" toupper($1) "=" substr($0, index($0, $2))
                }
-             }' "${{ inputs.file }}" > dockerhub.env
+             }' "${{ inputs.file }}" >> dockerhub.env
 
         cat dockerhub.env >> ${GITHUB_ENV}
 
