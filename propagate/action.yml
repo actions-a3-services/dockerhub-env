@@ -45,6 +45,29 @@ runs:
             ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:latest
             ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }}
 
+
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }}
+          format: spdx-json
+          output-file: sbom.json
+
+      - name: Generate provenance
+        uses: slsa-framework/slsa-github-generator@v1
+        with:
+          image: ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }}
+
+      - name: Sign image with cosign
+        run: |
+          cosign sign --key env://COSIGN_PRIVATE_KEY ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }}
+
+
+
+
+          
+
       - name: Set Docker Hub description @ DOCKERHUB.md
         shell: bash
         run: |
