@@ -47,31 +47,30 @@ runs:
 
       - name: Set Docker Hub description @ DOCKERHUB.md
         shell: sh
-        env:
-          DOCKERHUB_USERNAME: ${{ env.DOCKERHUB_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ env.DOCKERHUB_TOKEN }}
-          REPO_NAME: "${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}" 
+        #env:
+        #  DOCKERHUB_USERNAME: ${{ env.DOCKERHUB_USERNAME }}
+        #  DOCKERHUB_TOKEN: ${{ env.DOCKERHUB_TOKEN }}
+        #  REPO_NAME: "${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}" 
         run: |
-          echo Set Docker Hub description @ DOCKERHUB.md
-          #TOKEN=$(curl -s -X POST https://hub.docker.com/v2/users/login/ \
-          #  -H "Content-Type: application/json" \
-          #  -d '{"username": "'"${DOCKERHUB_USERNAME}"'", "password": "'"${DOCKERHUB_TOKEN}"'"}' | jq -r .token)
-          #
-          #FULL_DESCRIPTION=$(<DOCKERHUB.md)
-          #
-          #JSON_PAYLOAD=$(jq -n \
-          #  --arg full_description "${FULL_DESCRIPTION}" \
-          #  --arg description "${{ env.DOCKERHUB_DESCRIPTION }}" \
-          #  '{full_description: $full_description, description: $description}')
-          #
-          #echo "JSON_PAYLOAD"
-          #echo "$JSON_PAYLOAD" | jq .
-          #
-          #curl -X PATCH "https://hub.docker.com/v2/repositories/${DOCKERHUB_USERNAME}/${REPO_NAME}/" \
-          #  -H "Content-Type: application/json" \
-          #  -H "Authorization: Bearer ${TOKEN}" \
-          #  -d "$JSON_PAYLOAD"
-          #
+          TOKEN=$(curl -s -X POST https://hub.docker.com/v2/users/login/ \
+            -H "Content-Type: application/json" \
+            -d '{"username": "'"${{ env.DOCKERHUB_USERNAME}}"'", "password": "'"${{ env.DOCKERHUB_TOKEN}}"'"}' | jq -r .token)
+          
+          FULL_DESCRIPTION=$(<DOCKERHUB.md)
+          
+          JSON_PAYLOAD=$(jq -n \
+            --arg full_description "${FULL_DESCRIPTION}" \
+            --arg description "${{ env.DOCKERHUB_DESCRIPTION }}" \
+            '{full_description: $full_description, description: $description}')
+          
+          echo "JSON_PAYLOAD"
+          echo "$JSON_PAYLOAD" | jq .
+          
+          curl -X PATCH "https://hub.docker.com/v2/repositories/${{ env.DOCKERHUB_USERNAME )}/ ${{ env.DOCKERHUB_REPO_NAME}}/" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -d "${JSON_PAYLOAD}"
+          
           #IFS=',' read -r -a categories <<< "${{ env.DOCKERHUB_CATEGORIES }}"
           #
           #CATEGORY_JSON=""
