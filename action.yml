@@ -13,3 +13,5 @@ runs:
       uses: ./get
     - name: Set up DOCKERHUB environment
       uses: ./set
+    - name: Propagate DOCKERHUB image
+      uses: ./propagate
