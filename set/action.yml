@@ -29,6 +29,12 @@ runs:
     - name: Extract metadata from DOCKERHUB.md
       shell: sh
       run: |
+        echo ".......................................xxxxxxxxxxx"
+        cat ${GITHUB_ENV}
+        echo "......................................."
+        cat dockerhub.env
+        echo "......................................."
+
         # Extrahovanie metadát medzi blokmi ---
         awk 'BEGIN {inside=0} 
              /^---$/ {inside++; next} 
