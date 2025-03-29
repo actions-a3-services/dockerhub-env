@@ -50,7 +50,7 @@ runs:
         run: |
           TOKEN=$(curl -s -X POST https://hub.docker.com/v2/users/login/ \
             -H "Content-Type: application/json" \
-            -d '{"username": "'"${{ env.DOCKERHUB_USERNAME }}"'", "password": "'"${{ env.DOCKERHUB_TOKEN }}"'"}' | jq -r .token)
+            -d '{"username": "${{ env.DOCKERHUB_USERNAME }}", "password": "${{ env.DOCKERHUB_TOKEN }}"}' | jq -r .token)
           
           FULL_DESCRIPTION=$(<DOCKERHUB.md)
           
