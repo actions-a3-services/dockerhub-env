@@ -29,9 +29,16 @@ runs:
     - name: Extract metadata from DOCKERHUB.md
       shell: sh
       run: |
+        # Extrahovanie metadát medzi blokmi ---
         awk 'BEGIN {inside=0} 
              /^---$/ {inside++; next} 
-             inside==1 {print "DOCKERHUB_" toupper($1) "=" substr($0, index($0, $2))}' "${{ inputs.file }}" >> dockerhub.env
+             inside==1 { 
+               # Pre každú riadok v metadátach vytvoríme premennú
+               if ($1 != "") { 
+                 # Vytvoríme premennú s prefixom DOCKERHUB_
+                 print "DOCKERHUB_" toupper($1) "=" substr($0, index($0, $2))
+               }
+             }' "${{ inputs.file }}" > dockerhub.env
 
         cat dockerhub.env >> ${GITHUB_ENV}
 
