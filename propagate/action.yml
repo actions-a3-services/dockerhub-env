@@ -87,14 +87,14 @@ runs:
       - name: Docker Hub Repository
         shell: sh
         run: |
-          echo "## Deployment Information" >> $GITHUB_STEP_SUMMARY
-          echo "| Parameter              | Command |" >> $GITHUB_STEP_SUMMARY
-          echo "|------------------------|---------|" >> $GITHUB_STEP_SUMMARY
-          echo "| DOCKERHUB_DESCRIPTION  | ${DOCKERHUB_DESCRIPTION} |" >> $GITHUB_STEP_SUMMARY
-          echo "| DOCKERHUB_CATEGORIES   | ${{ env.DOCKERHUB_CATEGORIES }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| DOCKERHUB_REPO         | ${{ env.DOCKERHUB_REPO }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| DOCKERHUB_APP_PARAM    | ${{ env.DOCKERHUB_APP_PARAM }} |" >> $GITHUB_STEP_SUMMARY
-          echo "|------------------------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "## Deployment Information"                                >> $GITHUB_STEP_SUMMARY
+          echo "| Parameter              | Command                     |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------------------|-----------------------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| DOCKERHUB_DESCRIPTION  | ${DOCKERHUB_DESCRIPTION}    |" >> $GITHUB_STEP_SUMMARY
+          echo "| DOCKERHUB_CATEGORIES   | ${DOCKERHUB_CATEGORIES}     |" >> $GITHUB_STEP_SUMMARY
+          echo "| DOCKERHUB_REPO         | ${DOCKERHUB_REPO}           |" >> $GITHUB_STEP_SUMMARY
+          echo "| DOCKERHUB_APP_PARAM    | ${DOCKERHUB_APP_PARAM}      |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------------------|-----------------------------|" >> $GITHUB_STEP_SUMMARY
           echo "| URL                    | https://hub.docker.com/r/a3services/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }} |" >> $GITHUB_STEP_SUMMARY
           echo "| APP                    | docker run a3services/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }} |" >> $GITHUB_STEP_SUMMARY
           echo "| APP-PARAM              | docker run ${{ env.DOCKERHUB_APP_PARAM }} a3services/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }} |" >> $GITHUB_STEP_SUMMARY
