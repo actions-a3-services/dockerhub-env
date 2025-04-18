@@ -49,9 +49,9 @@ runs:
           provenance: mode=max
           build-args: |
             AMS=${{ env.AMS }}
-            AHS_NAME=${{ env.AMS_NAME }}
-            AHS_REVISION=${{ env.AMS_REVISION }}
-            AHS_BUILD=${{ env.AMS_BUILD }}
+            AMS_NAME=${{ env.AMS_NAME }}
+            AMS_REVISION=${{ env.AMS_REVISION }}
+            AMS_BUILD=${{ env.AMS_BUILD }}
           tags: |
             ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:latest
             ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}-${{ env.AMS_NAME }}:${{ env.AMS_REVISION }}
