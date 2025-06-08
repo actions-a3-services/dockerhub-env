@@ -35,7 +35,8 @@ runs:
           if [ -n "$line" ]; then
             key=$(echo "$line" | cut -d ':' -f1 | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
             value=$(echo "$line" | cut -d ':' -f2- | sed 's/^[[:space:]]*//')
-            echo "DOCKERHUB_${key}=${value}" >> dockerhub.env
+            value_envsubst=$(echo "$value" | envsubst)
+            echo "DOCKERHUB_${key}=${value_envsubst}" >> dockerhub.env
           fi
         done
         cat dockerhub.env >> ${GITHUB_ENV}
